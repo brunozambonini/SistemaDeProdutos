@@ -1,0 +1,71 @@
+
+<div class="row">
+  <div class="col-sm-6">
+    <h2>{{title}}</h2>
+  </div>
+  <div class="col-sm-4">
+    <input class="form-control mr-sm-2" name="filterPost" type="search" [(ngModel)]="filterPost">
+  </div>
+  <div class="col-sm-2">
+    <button class="btn btn-outline-success" (click)="openModal(template)" (click)="produtoNovo()"> Novo Produto</button>
+  </div>
+</div>
+
+<table class="table table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Nome</th>
+      <th scope="col">Preço</th>
+      <th scope="col">Opções</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let produto of produtos | filter:filterPost | paginate: { itemsPerPage: pageSize, currentPage: page }">
+      <th scope="row">{{produto.id}}</th>
+      <td>{{produto.nome}}</td>
+      <td>{{produto.preco}}</td>
+      <td>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button (click)="produtoSelect(produto)" (click)="openModal(template)" class="btn btn-sm btn-outline-primary">Editar</button>
+          <button (click)="deletar(produto.id)" class="btn btn-sm btn-outline-danger">Excluir</button>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+  <!--controle de paginação.-->
+  <div class="text-right">
+    <pagination-controls
+		(pageChange)="page 
+		= $event" 
+		previousLabel="Anterior"
+		nextLabel="Próximo"></pagination-controls>
+  </div>
+  
+<ng-template #template>
+  <div class="modal-body">
+    <h3>Produto: {{produtoSelecionado.nome}}</h3>
+    <br>
+    
+    <form [formGroup]="produtoForm" (submit)="produtoSubmit()">
+      <div class="form-group">
+        <label for="formGroupExampleInput">Nome</label>
+        <input type="text" formControlName="nome" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="formGroupExampleInput2">Preço</label>
+        <input type="number" formControlName="preco" class="form-control">
+      </div>
+      
+      <button class="btn btn-success" [disabled]="!produtoForm.valid"> Salvar </button>
+    </form>
+    
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</ng-template>
